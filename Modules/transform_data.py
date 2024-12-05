@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from kymatio.numpy import Scattering1D
 import logging
+import sys
 
 def transform_data(data, J, Q, verbose = 0):
     """transform_data 
@@ -19,11 +20,11 @@ def transform_data(data, J, Q, verbose = 0):
         DataFrame: Name to who sound wave belongs with wavelet coefficient features
     """    
 
-    # configer logging based on verbosity
+    # Adjust logging level based on verbosity
     if verbose == 0:
-        logging.basicConfig(level = logging.CRITICAL, format='%(message)s')
-    if verbose == 1:
-        logging.basicConfig(level = logging.INFO, format='%(levelname)s: %(message)s')
+        logging.getLogger().setLevel(logging.CRITICAL)
+    elif verbose == 1:
+        logging.getLogger().setLevel(logging.INFO)
 
     wavelet_coefs = {}
     completion_index = 0
@@ -78,11 +79,8 @@ def transform_data(data, J, Q, verbose = 0):
 
 
 
-        print("")
-
-        logging.critical(f"transformation is {completion_index / len(data):.2%} complete \n")
-
-        print("")
+        sys.stdout.write(f"\rtransformation is {completion_index / len(data):.2%} complete")
+        sys.stdout.flush()
 
     print("Returning data frame...")
     df = pd.DataFrame(wavelet_coefs)
